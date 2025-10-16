@@ -44,3 +44,14 @@ You are free to use any frameworks/NuGet packages that you see fit. You should p
 Feel free to use code comments to describe your changes. You are also welcome to update this readme with any important details for us to consider.
 
 Once you have completed the exercise either ensure your repository is available publicly or contact the hiring manager to set up a private share.
+
+//Design Choices
+
+Encapsulation and Structure
+I ensured a clean, high-level workflow by separating the core business logic from the main sequence of operations. This means the main Calculate method is kept clean, focusing only on the steps: retrieve data, delegate calculation, and store the result. I achieved this separation by defining dedicated public methods for each incentive type, such as GetResultFixedCashAmount. This structure facilitates Single Responsibility Principle (SRP) compliance, as each helper method is solely responsible for its specific incentive type's business rules and mathematics.
+
+Robustness and Validation
+The design incorporates defensive programming and the Fail-Fast principle. I placed all necessary validation—checking for null inputs, zero values, and product support—at the beginning of the helper methods (GetResult...). This ensures that if the input is invalid, the function immediately returns a failed result, preventing unnecessary computation and improving performance. Additionally, using the null-conditional operator (rebate?.Incentive switch) in GetRebateResult helps guard against potential NullReferenceException crashes if data retrieval fails.
+
+Testability of Logic
+By making the core calculation methods public, I deliberately enabled direct unit testing of the business rules. This design choice isolates the critical logic, allowing for thorough verification of the mathematical accuracy and failure conditions without requiring a complex mocking setup for the data access layer, ensuring the core calculations are proven reliable.
