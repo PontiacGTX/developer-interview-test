@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Smartwyre.DeveloperTest.Data;
+using Smartwyre.DeveloperTest.Data.Contracts;
+using Smartwyre.DeveloperTest.Data.Contracts.Smartwyre.DeveloperTest.Data;
 using Smartwyre.DeveloperTest.Services;
 using Smartwyre.DeveloperTest.Types;
 using System;
@@ -14,9 +16,8 @@ class Program
         // --- Setup and Configuration (The DI part) ---
         var serviceProvider = new ServiceCollection()
             // Register the RebateService and its dependencies
-            .AddSingleton<RebateDataStore>()
-            .AddSingleton<ProductDataStore>()
- 
+            .AddSingleton<IRebateDataStore,RebateDataStore>()
+            .AddSingleton<IProductDataStore,ProductDataStore>()
             .AddSingleton<IRebateService, RebateService>()
             .BuildServiceProvider();
 

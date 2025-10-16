@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Smartwyre.DeveloperTest.Data.Contracts
+{
+    using global::Smartwyre.DeveloperTest.Types;
+
+
+    namespace Smartwyre.DeveloperTest.Data
+    {
+        public interface IRebateDataStore
+        {
+            Rebate GetRebate(string rebateIdentifier);
+
+            void StoreCalculationResult(Rebate rebate, decimal rebateAmount);
+        }
+    }
+}
