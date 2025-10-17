@@ -80,7 +80,7 @@ public class PaymentServiceTests
         RebateResult result = _service.GetResultAmountPerUom(null, _supportedProduct, _validRequest);
 
         // Assert
-        Assert.False(result.Success);
+        Assert.False(result?.Success);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class PaymentServiceTests
         RebateResult result = _service.GetResultAmountPerUom(_validRebate, null, _validRequest);
 
         // Assert
-        Assert.False(result.Success);
+        Assert.False(result?.Success);
     }
 
     [Fact]

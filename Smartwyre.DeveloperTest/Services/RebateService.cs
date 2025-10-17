@@ -16,7 +16,7 @@ public class RebateService(IRebateDataStore rebateDataStore, IProductDataStore p
         Product product = productDataStore.GetProduct(request.ProductIdentifier);
 
         if (rebate == null || product == null)
-            return rebateResult;
+            return null;
 
         rebateResult = GetRebateResult(rebate, product, request);
         rebateAmount = rebateResult.Amount;
@@ -45,7 +45,7 @@ public class RebateService(IRebateDataStore rebateDataStore, IProductDataStore p
     {
         RebateResult result = new RebateResult();
 
-        if ( !product.SupportedIncentives.HasFlag(SupportedIncentiveType.AmountPerUom) ||
+        if (rebate == null || product == null||!product.SupportedIncentives.HasFlag(SupportedIncentiveType.AmountPerUom) ||
             (rebate.Amount == 0 || request.Volume == 0))
             return result;
 
