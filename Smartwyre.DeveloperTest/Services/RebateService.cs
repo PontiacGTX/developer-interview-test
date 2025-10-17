@@ -10,10 +10,15 @@ public class RebateService(IRebateDataStore rebateDataStore, IProductDataStore p
 {
     public RebateResult Calculate(CalculateRebateRequest request)
     {
+        decimal rebateAmount = 0m;
+        RebateResult rebateResult =  new RebateResult();
         Rebate rebate = rebateDataStore.GetRebate(request.RebateIdentifier);
         Product product = productDataStore.GetProduct(request.ProductIdentifier);
-        decimal rebateAmount = 0m;
-        RebateResult rebateResult = GetRebateResult(rebate, product, request);
+
+        if (rebate == null || product == null)
+            return rebateResult;
+
+        rebateResult = GetRebateResult(rebate, product, request);
         rebateAmount = rebateResult.Amount;
          
         if (!rebateResult.Success)
@@ -40,7 +45,7 @@ public class RebateService(IRebateDataStore rebateDataStore, IProductDataStore p
     {
         RebateResult result = new RebateResult();
 
-        if (rebate == null || product == null || !product.SupportedIncentives.HasFlag(SupportedIncentiveType.AmountPerUom) ||
+        if ( !product.SupportedIncentives.HasFlag(SupportedIncentiveType.AmountPerUom) ||
             (rebate.Amount == 0 || request.Volume == 0))
             return result;
 
@@ -54,8 +59,8 @@ public class RebateService(IRebateDataStore rebateDataStore, IProductDataStore p
     {
         RebateResult result = new RebateResult();
 
-        if((rebate == null || product == null || (rebate?.Percentage == 0 || product?.Price == 0 || request?.Volume == 0) ||
-             !product.SupportedIncentives.HasFlag(SupportedIncentiveType.FixedRateRebate)))
+        if((rebate?.Percentage == 0 || product?.Price == 0 || request?.Volume == 0) ||
+             !product.SupportedIncentives.HasFlag(SupportedIncentiveType.FixedRateRebate))
             return result;
 
         result.Amount += product.Price * rebate.Percentage * request.Volume;
@@ -68,7 +73,7 @@ public class RebateService(IRebateDataStore rebateDataStore, IProductDataStore p
     {
         RebateResult result = new RebateResult();
 
-        if(rebate==null || !product.SupportedIncentives.HasFlag(SupportedIncentiveType.FixedCashAmount) || rebate?.Amount == 0)
+        if(!product.SupportedIncentives.HasFlag(SupportedIncentiveType.FixedCashAmount) || rebate?.Amount == 0)
             return result;
 
         result.Success = true;
