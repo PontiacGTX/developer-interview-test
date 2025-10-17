@@ -1,16 +1,15 @@
 ﻿using Smartwyre.DeveloperTest.Data;
+using Smartwyre.DeveloperTest.Data.Contracts;
+using Smartwyre.DeveloperTest.Data.Contracts.Smartwyre.DeveloperTest.Data;
 using Smartwyre.DeveloperTest.Types;
 using System;
 
 namespace Smartwyre.DeveloperTest.Services;
 
-public class RebateService : IRebateService
+public class RebateService(IRebateDataStore rebateDataStore, IProductDataStore productDataStore) : IRebateService
 {
     public RebateResult Calculate(CalculateRebateRequest request)
     {
-        var rebateDataStore = new RebateDataStore();
-        var productDataStore = new ProductDataStore();
-
         Rebate rebate = rebateDataStore.GetRebate(request.RebateIdentifier);
         Product product = productDataStore.GetProduct(request.ProductIdentifier);
         decimal rebateAmount = 0m;
@@ -20,8 +19,8 @@ public class RebateService : IRebateService
         if (!rebateResult.Success)
             return  rebateResult;
 
-        var storeRebateDataStore = new RebateDataStore();
-        storeRebateDataStore.StoreCalculationResult(rebate, rebateAmount);
+
+        rebateDataStore.StoreCalculationResult(rebate, rebateAmount);
 
         return  rebateResult;
     }

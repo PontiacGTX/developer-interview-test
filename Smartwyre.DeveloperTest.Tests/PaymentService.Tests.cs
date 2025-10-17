@@ -1,3 +1,7 @@
+using Microsoft.Extensions.DependencyInjection;
+using Smartwyre.DeveloperTest.Data;
+using Smartwyre.DeveloperTest.Data.Contracts;
+using Smartwyre.DeveloperTest.Data.Contracts.Smartwyre.DeveloperTest.Data;
 using Smartwyre.DeveloperTest.Services;
 using Smartwyre.DeveloperTest.Types;
 using System;
@@ -7,10 +11,23 @@ namespace Smartwyre.DeveloperTest.Tests;
 
 public class PaymentServiceTests
 {
-    private readonly RebateService _service = new RebateService();
+    private readonly IRebateService _service = null;
     private readonly Product _supportedProduct = new Product { SupportedIncentives = SupportedIncentiveType.AmountPerUom };
     private readonly Rebate _validRebate = new Rebate { Amount = 5.00m };
     private readonly CalculateRebateRequest _validRequest = new CalculateRebateRequest { Volume = 10 };
+    public PaymentServiceTests()
+    {
+        // --- Setup and Configuration (The DI part) ---
+        var serviceProvider = new ServiceCollection()
+            // Register the RebateService and its dependencies
+            .AddSingleton<IRebateDataStore, RebateDataStore>()
+            .AddSingleton<IProductDataStore, ProductDataStore>()
+            .AddSingleton<IRebateService, RebateService>()
+            .BuildServiceProvider();
+       var scope = serviceProvider.CreateScope();
+       var svc = scope.ServiceProvider.GetService<IRebateService>();
+      _service = svc;
+    }
     [Fact]
     public void GetResultFixedCashAmount_ShouldSucceed_WhenValid()
     {
